@@ -38,7 +38,6 @@ public class Main extends Activity implements OnClickListener {
         protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
             InputStream in = entity.getContent();
 
-
             StringBuffer out = new StringBuffer();
             int n = 1;
             while (n>0) {
@@ -55,7 +54,7 @@ public class Main extends Activity implements OnClickListener {
         protected String doInBackground(Void... params) {
             HttpClient httpClient = new DefaultHttpClient();
             HttpContext localContext = new BasicHttpContext();
-            HttpGet httpGet = new HttpGet("http://vm39.cs.lth.se:9000/data/devices");
+            HttpGet httpGet = new HttpGet("http://vm39.cs.lth.se:9000/device");
             String text = null;
 
             try {
