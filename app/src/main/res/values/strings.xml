@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Network</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="some_text">This is an example text. The string is stored as a resource in res/values/strings.xml. This makes the code cleaner and easier to maintain</string>
+    <string name="editbox_hint">String to pass to new activity</string>
+    <string name="button_name">Get Device List</string>
     <string name="action_settings">Settings</string>
 </resources>
