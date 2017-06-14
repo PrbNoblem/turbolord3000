@@ -14,14 +14,14 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public abstract class LongRunningGetIO extends AsyncTask<Void, Void, List<DeviceBean>> {
-    private static final String TAG = "LongRunningGetIO";
+public abstract class GetDevicesTask extends AsyncTask<Void, Void, List<DeviceBean>> {
+    private static final String TAG = "GetDevicesTask";
     private static final String BASE_URL = "http://vm39.cs.lth.se:9000/";
 
     private Retrofit retrofit;
     private BackendService service;
 
-    public LongRunningGetIO() {
+    public GetDevicesTask() {
         Gson gson = new GsonBuilder().create();
 
         retrofit = new Retrofit.Builder()
