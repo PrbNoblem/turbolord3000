@@ -57,4 +57,9 @@ public class DeviceBean implements Serializable {
     public void setSensors(String[] sensors) {
         this.sensors = sensors;
     }
+
+    @Override
+    public String toString() {
+        return id + ":(" + deviceAddress + ") " + name;
+    }
 }
