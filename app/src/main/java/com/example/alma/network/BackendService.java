@@ -1,8 +1,11 @@
 package com.example.alma.network;
 
-/**
- * Created by elt13wch on 2017-06-14.
- */
+import java.util.List;
 
-public class BackendService {
+import retrofit2.Call;
+import retrofit2.http.GET;
+
+public interface BackendService {
+    @GET("device")
+    Call<List<DeviceBean>> getDeviceList();
 }

@@ -1,74 +1,62 @@
 package com.example.alma.network;
 
-import android.app.Activity;
 import android.os.AsyncTask;
-import android.widget.Button;
-import android.widget.EditText;
+import android.util.Log;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-public class LongRunningGetIO extends AsyncTask<Void, Void, String> {
-    private Activity activity;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-    public LongRunningGetIO(Activity activity){
-        this.activity = activity;
-    }
+public abstract class LongRunningGetIO extends AsyncTask<Void, Void, List<DeviceBean>> {
+    private static final String TAG = "LongRunningGetIO";
+    private static final String BASE_URL = "http://vm39.cs.lth.se:9000/";
 
-    protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
-        InputStream in = entity.getContent();
+    private Retrofit retrofit;
+    private BackendService service;
 
-        StringBuffer out = new StringBuffer();
-        int n = 1;
-        while (n>0) {
-            byte[] b = new byte[4096];
-            n =  in.read(b);
+    public LongRunningGetIO() {
+        Gson gson = new GsonBuilder().create();
 
-            if (n>0) out.append(new String(b, 0, n));
-        }
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
 
-        return out.toString();
+        service = retrofit.create(BackendService.class);
     }
 
     @Override
-    protected String doInBackground(Void... voids) {
-        HttpClient httpClient = new DefaultHttpClient();
-        HttpContext localContext = new BasicHttpContext();
-        HttpGet httpGet = new HttpGet("http://vm39.cs.lth.se:9000/device");
-        String text = null;
+    protected void onPreExecute() {
+        //This method is called before the main task is started. Good for preparations
+        Log.d(TAG, "onPreExecute");
+    }
 
+    @Override
+    protected List<DeviceBean> doInBackground(Void... voids) {
+        Log.d(TAG, "doInBackground");
+
+        Call<List<DeviceBean>> call = service.getDeviceList();
         try {
-            HttpResponse response = httpClient.execute(httpGet, localContext);
-
-            HttpEntity entity = response.getEntity();
-
-            text = getASCIIContentFromEntity(entity);
-
-        } catch (Exception e) {
-            return e.getLocalizedMessage();
+            return call.execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        return text;
+        return new ArrayList<DeviceBean>();
     }
 
     @Override
-    protected void onPostExecute(String results) {
-        if (results!=null) {
-            EditText et = (EditText) activity.findViewById(R.id.my_edit);
-
-            et.setText(results);
-        }
-
-        Button b = (Button) activity.findViewById(R.id.my_button);
-
-        b.setClickable(true);
+    protected void onPostExecute(List<DeviceBean> results) {
+        //This method is called after the main task has completed. Good for cleanup
+        Log.d(TAG, "onPostExecute");
+        presentResults(results);
     }
+
+    protected abstract void presentResults(List<DeviceBean> results);
 }
