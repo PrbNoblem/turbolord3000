@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/activity_default_padding"
     android:orientation="vertical"
-    tools:context=".Main">
+    tools:context=".MainActivity">
 
     <TextView
         android:text="@string/some_text"
