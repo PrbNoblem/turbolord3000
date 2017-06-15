@@ -14,6 +14,10 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/*
+AsyncTasks are used to perform time-consuming work on a separate thread from the UI thread,
+thus preventing the UI getting unresponsive while executing the task.
+ */
 public abstract class GetDevicesTask extends AsyncTask<Void, Void, List<DeviceBean>> {
     private static final String TAG = "GetDevicesTask";
     private static final String BASE_URL = "http://vm39.cs.lth.se:9000/";
@@ -22,13 +26,22 @@ public abstract class GetDevicesTask extends AsyncTask<Void, Void, List<DeviceBe
     private BackendService service;
 
     public GetDevicesTask() {
+        //Gson is a library used for work on JSON formatted data.
         Gson gson = new GsonBuilder().create();
 
+        //Retrofit is a library used for HTTP requests. Its widely used in the Android community
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
+        /*
+        Thanks to the GsonConverterFactory, the responses from the backend (which are formatted
+        in JSON) get automatically converted to Java objects without any effort. The Java objects
+        have to have same names as the JSON properties for this to work.
+         */
 
+        //The service interface is a way to define the HTTP API. For more information about
+        //Retrofit, read http://square.github.io/retrofit/
         service = retrofit.create(BackendService.class);
     }
 
@@ -48,6 +61,8 @@ public abstract class GetDevicesTask extends AsyncTask<Void, Void, List<DeviceBe
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //Return an empty list in case the request fails
         return new ArrayList<DeviceBean>();
     }
 
@@ -58,5 +73,6 @@ public abstract class GetDevicesTask extends AsyncTask<Void, Void, List<DeviceBe
         presentResults(results);
     }
 
+    //This method has to be implemented before this class can be instantiated.
     protected abstract void presentResults(List<DeviceBean> results);
 }
